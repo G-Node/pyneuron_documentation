@@ -1,0 +1,10 @@
+Appendix I: Software Setup
+==========================
+:Author: Philipp Rautenberg <philipp.rautenberg@skip_this.g-node.org>
+:Tags: setup software ubuntu linux python neuron
+
+Links
+-----
+* `NEURON homepage <http://www.neuron.yale.edu/neuron>`_
+* `Download and Install NEURON <http://www.neuron.yale.edu/neuron/install/install.html>`_
+* `Introduction to pyNEURON by Andrew Davison <http://www.davison.webfactional.com/notes/modelling-single-cells-neuron-python/>`_

@@ -1,0 +1,149 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>python FAQ &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Frequently Asked Questions" href="index_faq.html" />
+    <link rel="next" title="matplotlib - FAQ" href="matplotlib_faq.html" />
+    <link rel="prev" title="pyNEURON FAQ" href="pyneuron_faq.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="matplotlib_faq.html" title="matplotlib - FAQ"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyneuron_faq.html" title="pyNEURON FAQ"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_faq.html" accesskey="U">Frequently Asked Questions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="python-faq">
+<span id="faq-python"></span><h1><a class="toc-backref" href="#id1">python FAQ</a><a class="headerlink" href="#python-faq" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#python-faq" id="id1">python FAQ</a><ul>
+<li><a class="reference internal" href="#how-can-i-check-statements-with-assert" id="id2">How can I check statements with assert?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="how-can-i-check-statements-with-assert">
+<span id="python-assert"></span><h2><a class="toc-backref" href="#id2">How can I check statements with assert?</a><a class="headerlink" href="#how-can-i-check-statements-with-assert" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">assert</span></tt> is usefull to check Boolean expressions (<tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>). The
+programm will continue in the <tt class="docutils literal"><span class="pre">True</span></tt>-case but will raise an exception in the
+<tt class="docutils literal"><span class="pre">False</span></tt>-case (and terminate the programm if the exception is not caught). The
+statement goes like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;One doesn&#39;t equal zero.&quot;</span>
+</pre></div>
+</div>
+<p>A <tt class="docutils literal"><span class="pre">try-except</span></tt> statement could catch an <cite>AssertationError</cite>:</p>
+<div class="highlight-python"><pre>try:
+  assert 1 == -, "One doesn't equal zero"
+except AssertionError, args:
+  print('%s: %s' %(args.__class__.__name__, args)</pre>
+</div>
+<p>See also the usage within properties of part...</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">python FAQ</a><ul>
+<li><a class="reference internal" href="#how-can-i-check-statements-with-assert">How can I check statements with assert?</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyneuron_faq.html"
+                        title="previous chapter">pyNEURON FAQ</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="matplotlib_faq.html"
+                        title="next chapter">matplotlib - FAQ</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/FAQ/python_faq.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="matplotlib_faq.html" title="matplotlib - FAQ"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyneuron_faq.html" title="pyNEURON FAQ"
+             >previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_faq.html" >Frequently Asked Questions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

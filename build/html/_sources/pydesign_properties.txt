@@ -1,0 +1,31 @@
+Part 2: Introduction to pyDesign
+================================
+:Author: Philipp Rautenberg <neuro@skip_this.paedia.info>
+:Tags: basics pyneuron
+
+.. contents::
+
+
+
+Exercise
+--------
+
+**Use Properties to control attributes of your classes**
+
+  * Keep control of your code by organizing modules/libraries
+  * Use object oriented programming paradigm
+
+Code
+----
+
+``pydesignlib_2.py``:
+
+.. literalinclude:: ../../Rautenberg/pydesignlib_2.py
+
+Remarks
+-------
+
+Links
+-----
+
+* <http://code.activestate.com/recipes/205183/>_

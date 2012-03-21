@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Part 2: Introduction to pyDesign &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Quickstart" href="index_quickstart.html" />
+    <link rel="next" title="Part 3: Writing a Simulation" href="simulation.html" />
+    <link rel="prev" title="Part 1: Introduction to pyNEURON" href="pyneuron.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="simulation.html" title="Part 3: Writing a Simulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyneuron.html" title="Part 1: Introduction to pyNEURON"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" accesskey="U">Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="part-2-introduction-to-pydesign">
+<span id="intro-pydesign"></span><h1>Part 2: Introduction to pyDesign<a class="headerlink" href="#part-2-introduction-to-pydesign" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Philipp Rautenberg &lt;<a class="reference external" href="mailto:philipp&#46;rautenberg&#37;&#52;&#48;skip_this&#46;g-node&#46;org">philipp<span>&#46;</span>rautenberg<span>&#64;</span>skip_this<span>&#46;</span>g-node<span>&#46;</span>org</a>&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Tags:</th><td class="field-body">basics pyneuron</td>
+</tr>
+</tbody>
+</table>
+<p>What do I mean with pyDesign? This is not a package like <tt class="docutils literal"><span class="pre">neuron</span></tt> but rather
+an idiom for the treatment of following situation: You start to write a code in a linear
+way: The interpreter goes from top to bottom, passes some loops and finishes
+at the end. But as the program gets larger it becomes reasonable to re-design
+your python code by using structures like functions (<tt class="docutils literal"><span class="pre">def</span> <span class="pre">xyz():</span></tt>), objects
+(<tt class="docutils literal"><span class="pre">class</span> <span class="pre">xyz():</span></tt>), and modules. Those structures make life easier as you will
+see.</p>
+<p>As we dont want to write the same code again and again, we can use functions in
+order to collect usefull sequences of commands. We give names to these
+collections and use them instead of the entire sequence. One example for this
+is the function <tt class="docutils literal"><span class="pre">make_compartment()</span></tt>.</p>
+<p>Another important structure is the object. Within an object we can combine
+functions (=object <cite>methods</cite>) and state variables (=object <cite>attributes</cite>). The
+description of an object is written in a <tt class="docutils literal"><span class="pre">class</span></tt> statement. For an example
+see <tt class="docutils literal"><span class="pre">Cell()</span></tt> and <tt class="docutils literal"><span class="pre">Simulation()</span></tt> (below).</p>
+<p>We can code those structures and collect them in modules which is nothing else
+than an extra python-file. By this way of <cite>out sourcing</cite>, we keep our <cite>real
+code</cite> nice and clean. Therefore, we can focus on our (scientific) problem. Also
+we can use the out sourced code within other programs without copy and paste.</p>
+<div class="section" id="exercise">
+<h2>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<p><strong>Simplify the code</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Keep control of your code by organizing modules/libraries</li>
+<li>Use object oriented programming paradigm</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p>This code is doing same like the code of part one. The difference is that it
+is just the organization of the code (to run this, save both files in the same
+directory and start there <tt class="docutils literal"><span class="pre">ipyton</span></tt>).</p>
+<p><tt class="docutils literal"><span class="pre">pydesign.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span> <span class="kn">as</span> <span class="nn">sqlite</span>
+<span class="kn">import</span> <span class="nn">pydesignlib</span> <span class="kn">as</span> <span class="nn">pdl</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">pdl</span><span class="o">.</span><span class="n">MSO_Neuron</span><span class="p">()</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">pdl</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">set_IClamp</span><span class="p">()</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And here is the library (it is not really a coherent style from a programmers
+point of view but rather introduces different python-structures).</p>
+<p><tt class="docutils literal"><span class="pre">pydesignlib.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">neuron</span>
+
+
+<span class="k">def</span> <span class="nf">make_compartment</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">diameter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nseg</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Returns a compartment.</span>
+
+<span class="sd">    comp = make_compartment(120, 4) # comp.L: 120; comp.diam: 4; comp.nsg: 1</span>
+<span class="sd">    comp = make_compartment()       # comp.L: 150; comp.diam: 3; comp.nsg: 1</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">compartment</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Section</span><span class="p">()</span>
+  <span class="n">compartment</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="n">length</span>
+  <span class="n">compartment</span><span class="o">.</span><span class="n">diam</span> <span class="o">=</span> <span class="n">diameter</span>
+  <span class="n">compartment</span><span class="o">.</span><span class="n">nseg</span> <span class="o">=</span> <span class="n">nseg</span>
+  <span class="k">return</span> <span class="n">compartment</span>
+
+
+<span class="k">class</span> <span class="nc">MSO_Neuron</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  This class will produce MSO_Neuron objects with a standard soma (L=40 um,</span>
+<span class="sd">  diam=20 um) with two identical dendrites connected on opposite sites of the</span>
+<span class="sd">  soma. For the dendrites the following parameters can be changed:</span>
+<span class="sd">  </span>
+<span class="sd">  * d_length:   length of each dendrite</span>
+<span class="sd">  * d_diameter: diameter of each dendrite</span>
+
+<span class="sd">  To check the morphology with NEURON gui:</span>
+<span class="sd">  &gt;&gt;&gt; from neuron import gui</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">d_diam</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method will be executed when you run</span>
+<span class="sd">    &gt;&gt;&gt; mycell = MSO_Neuron()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># passive properties</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gp</span> <span class="o">=</span> <span class="mf">0.004</span> <span class="c"># [S/cm^2]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="o">-</span><span class="mi">60</span> <span class="c"># []</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="c"># creating compartments</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">soma</span> <span class="o">=</span> <span class="n">make_compartment</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dendrites</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">sites</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;contra&#39;</span><span class="p">,</span> <span class="s">&#39;ipsi&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">:</span>
+      <span class="n">dendrite</span> <span class="o">=</span> <span class="n">make_compartment</span><span class="p">(</span><span class="n">d_length</span><span class="p">,</span> <span class="n">d_diam</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">site</span> <span class="o">==</span> <span class="s">&#39;contra&#39;</span><span class="p">:</span>
+        <span class="c"># connecting the contralateral dendrite to the soma</span>
+        <span class="n">dendrite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soma</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="n">site</span> <span class="o">==</span> <span class="s">&#39;ipsi&#39;</span><span class="p">:</span>
+        <span class="c"># connecting the ipsilateral dendrite to the soma</span>
+        <span class="n">dendrite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soma</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Here is something wrong...&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;site: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">site</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">dendrites</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">site</span><span class="p">:</span> <span class="n">dendrite</span><span class="p">})</span>
+
+    <span class="c"># initialize parameters</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">set_passive_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ra</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">set_passive_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gp</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">E</span><span class="o">=-</span><span class="mi">60</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">allsec</span><span class="p">():</span>
+      <span class="n">sec</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="n">rho</span>
+      <span class="n">sec</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;pas&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">sec</span><span class="p">:</span>
+        <span class="n">seg</span><span class="o">.</span><span class="n">pas</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">gp</span>
+        <span class="n">seg</span><span class="o">.</span><span class="n">pas</span><span class="o">.</span><span class="n">e</span> <span class="o">=</span> <span class="n">E</span>
+
+  <span class="k">def</span> <span class="nf">change_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diam</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dendrite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dendrites</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+      <span class="n">dendrite</span><span class="o">.</span><span class="n">diam</span> <span class="o">=</span> <span class="n">diam</span>
+
+  <span class="k">def</span> <span class="nf">change_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dendrite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dendrites</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+      <span class="n">dendrite</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="n">length</span>
+      
+    
+<span class="k">class</span> <span class="nc">Simulation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Oblects of this class control a current clamp simulation. Example of use:</span>
+<span class="sd">  &gt;&gt;&gt; cell = Cell()</span>
+<span class="sd">  &gt;&gt;&gt; sim = Simulation(cell)</span>
+<span class="sd">  &gt;&gt;&gt; sim.go()</span>
+<span class="sd">  &gt;&gt;&gt; sim.show()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sim_time</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sim_time</span> <span class="o">=</span> <span class="n">sim_time</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">go_already</span> <span class="o">=</span> <span class="bp">False</span>
+
+  <span class="k">def</span> <span class="nf">set_IClamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">amp</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes values for current clamp.</span>
+<span class="sd">    </span>
+<span class="sd">    Default values:</span>
+<span class="sd">      </span>
+<span class="sd">      delay = 1 [ms]</span>
+<span class="sd">      amp   = -1 [nA]</span>
+<span class="sd">      dur   = 3 [ms]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stim</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">IClamp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">soma</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+    <span class="n">stim</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">stim</span><span class="o">.</span><span class="n">amp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">stim</span><span class="o">.</span><span class="n">dur</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stim</span> <span class="o">=</span> <span class="n">stim</span>
+
+  <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">go_already</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_t</span><span class="p">)</span>
+      <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_v</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;Time [ms]&quot;</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;Voltage [mV]&quot;</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">ymin</span><span class="o">=-</span><span class="mi">120</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;&quot;First you have to `go()` the simulation.&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    
+  <span class="k">def</span> <span class="nf">set_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># Record Time</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rec_t</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rec_t</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">_ref_t</span><span class="p">)</span>
+    <span class="c"># Record Voltage</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rec_v</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rec_v</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">soma</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">_ref_v</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_t</span><span class="p">)</span>
+    <span class="n">voltage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">voltage</span>
+
+  <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_time</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">set_recording</span><span class="p">()</span>
+    <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+    <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">finitialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+    <span class="n">neuron</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">sim_time</span><span class="p">:</span>
+      <span class="n">neuron</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sim_time</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">neuron</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_time</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">go_already</span> <span class="o">=</span> <span class="bp">True</span>
+
+  <span class="k">def</span> <span class="nf">get_tau_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_flag</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ip_resol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="n">time</span><span class="p">,</span> <span class="n">voltage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+    <span class="n">vsa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">voltage</span><span class="o">-</span><span class="n">voltage</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c">#vsa: voltage shifted and absolut</span>
+    <span class="n">v_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">vsa</span><span class="p">)</span>
+    <span class="n">exp_val</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">v_max</span> <span class="c"># 0.6321 * v_max</span>
+    <span class="n">ix_tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vsa</span> <span class="o">&gt;</span> <span class="p">(</span> <span class="n">exp_val</span> <span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> 
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">ix_tau</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">delay</span> 
+    <span class="k">return</span> <span class="n">tau</span>
+  
+  <span class="k">def</span> <span class="nf">get_Rin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returnes the input resistance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">voltage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+    <span class="n">volt_diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">voltage</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">voltage</span><span class="p">)</span>
+    <span class="n">Rin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">volt_diff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">amp</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Rin</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="remarks">
+<h2>Remarks<a class="headerlink" href="#remarks" title="Permalink to this headline">¶</a></h2>
+<p>Check the following commands and see within the code how it is implemented:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="docutils literal"><span class="pre">help</span> <span class="pre">pdl.make_compartment</span></tt> (shows the docstring)</li>
+<li><tt class="docutils literal"><span class="pre">pdl.make_compartment</span> <span class="pre">?</span></tt> (similar)</li>
+<li><tt class="docutils literal"><span class="pre">pld.make_compartment</span> <span class="pre">??</span></tt> (ipython: shows the code)</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Part 2: Introduction to pyDesign</a><ul>
+<li><a class="reference internal" href="#exercise">Exercise</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#remarks">Remarks</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyneuron.html"
+                        title="previous chapter">Part 1: Introduction to pyNEURON</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="simulation.html"
+                        title="next chapter">Part 3: Writing a Simulation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/quickstart/pydesign.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="simulation.html" title="Part 3: Writing a Simulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyneuron.html" title="Part 1: Introduction to pyNEURON"
+             >previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" >Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

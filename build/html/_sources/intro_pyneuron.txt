@@ -1,0 +1,82 @@
+Part 1: Introduction to pyNEURON
+================================
+:Author: Philipp Rautenberg <neuro@skip_this.paedia.info>
+:Tags: mso basics pyneuron
+
+.. contents::
+
+In order to run the code you have to install the following packages:
+
+* **NEURON** with python support: `Download and Install NEURON <http://www.neuron.yale.edu/neuron/install/install.html>`_
+* **matplotlib**
+
+To get started use a python interpreter, such as python or ipython. I recommend
+to use `ipython` with `--pylab` in order to enable interactive use of
+plotting)::
+
+  $ ipython --pylab
+
+Exercise
+--------
+
+**Create a bipolar neuron and simulate a current clamp experiment**
+
+     * Create a three compartmental model with one soma and two dendrites
+     * Simulate a somatic current clamp experiment
+     * Visualize results of the simulations with ``matplotlib``
+
+The model:
+
+* A bipolar neuron with a soma and two morphological equivalent dendrites
+* Soma length (``soma.L``): [40 um]
+* Soma diameter (``soma.diam``): [20 um]
+* Axial Resistivity (``Ra``): 200 [Ohm * cm]
+* Passive conductivity (``pas.g``) = 0.003 [S/cm^2]
+* Passive reversal potential (``pas.e``) = -60 [mV]
+
+Measures:
+
+Let's insert a current pulse with current clamp and record the voltage trace at
+the location of stimulation. From this voltage trace we can calculate the
+
+* `tau_eff` (effective time constant): time after simulus onset when the
+  voltage trace reaches 1 - 1/e of its maximal change (~63%).
+* `R_in` (input resistance): dV(max)/dI
+
+
+Here is a sketch of the setup::
+
+                      L=40 um
+                      diam=20 um
+                      _________
+  L=150 um, diam=3 um |       | L=150 um, diam=3 um
+  ====================| soma  |===================
+  dend_ipsi           |_______| dend_contra
+                     
+
+                         /\
+                         ||
+                         || electrode
+                         ||
+                         ||
+
+
+     current pulse:
+  ___________                               __________
+   1 s; 0 nA |                              | 1 s; 0 nA
+             |     3 s; -1 nA               |
+             |______________________________|
+
+Code
+----
+
+``pyneuron.py``:
+
+.. literalinclude:: ../../Rautenberg/pyneuron.py
+
+Remarks
+-------
+
+#. Interesting discussion for `possible section syntax
+   <https://www.neuron.yale.edu/phpBB/viewtopic.php?f=2&t=391&start=0>`_
+#. For FAQ see :ref:`FAQ_pyneuron`

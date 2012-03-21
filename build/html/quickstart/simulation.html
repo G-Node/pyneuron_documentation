@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Part 3: Writing a Simulation &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Quickstart" href="index_quickstart.html" />
+    <link rel="next" title="Frequently Asked Questions" href="../FAQ/index_faq.html" />
+    <link rel="prev" title="Part 2: Introduction to pyDesign" href="pydesign.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../FAQ/index_faq.html" title="Frequently Asked Questions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pydesign.html" title="Part 2: Introduction to pyDesign"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" accesskey="U">Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="part-3-writing-a-simulation">
+<span id="simulation"></span><h1>Part 3: Writing a Simulation<a class="headerlink" href="#part-3-writing-a-simulation" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Philipp Rautenberg &lt;<a class="reference external" href="mailto:philipp&#46;rautenberg&#37;&#52;&#48;skip_this&#46;g-node&#46;org">philipp<span>&#46;</span>rautenberg<span>&#64;</span>skip_this<span>&#46;</span>g-node<span>&#46;</span>org</a>&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Tags:</th><td class="field-body">basics pyneuron sql sqlite</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="exercise">
+<h2>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<p><strong>Use a SQL database to control data</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Create a SQLite database</li>
+<li>Run a simulation for a given parameter space</li>
+<li>Store data in a database</li>
+<li>Look at the data with Firefox add on <cite>SQLite Manager</cite></li>
+<li>Analyze data with a database</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p>Here is the same procedure like in part2: first the script and below the
+library.</p>
+<p><tt class="docutils literal"><span class="pre">simulation.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span> <span class="kn">as</span> <span class="nn">sqlite</span>
+
+<span class="kn">import</span> <span class="nn">pydesignlib</span> <span class="kn">as</span> <span class="nn">pdl</span>
+<span class="kn">import</span> <span class="nn">sqllib</span> <span class="kn">as</span> <span class="nn">sl</span>
+
+<span class="n">cell</span> <span class="o">=</span> <span class="n">pdl</span><span class="o">.</span><span class="n">MSO_Neuron</span><span class="p">()</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">pdl</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">set_IClamp</span><span class="p">()</span>
+<span class="n">db_name</span> <span class="o">=</span> <span class="s">&quot;simulation_results.sqlite&quot;</span>
+
+<span class="c"># If you want to check, use</span>
+<span class="c"># &gt;&gt;&gt; from neuron import gui</span>
+<span class="c"># and watch the morphology while playing around, e.g.:</span>
+<span class="c"># &gt;&gt;&gt; cell.change_length(50)</span>
+<span class="c"># &gt;&gt;&gt; cell.change_diameter(10)</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
+
+<span class="c"># connect to database</span>
+<span class="c"># ==========================</span>
+<span class="n">cxn</span> <span class="o">=</span> <span class="n">sqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">cxn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">  CREATE TABLE results(</span>
+<span class="s">    length INTEGER,</span>
+<span class="s">    diameter REAL,</span>
+<span class="s">    Ra INTEGER,</span>
+<span class="s">    Rin REAL,</span>
+<span class="s">    tau_eff REAL,</span>
+<span class="s">    PRIMARY KEY (length, diameter, Ra)</span>
+<span class="s">    )</span>
+<span class="s">    &quot;&quot;&quot;</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="c"># run simulation across sets of parameters</span>
+<span class="c"># ========================================</span>
+<span class="n">Ras</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+<span class="n">diameters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">3.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">210</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">Ra</span> <span class="ow">in</span> <span class="n">Ras</span><span class="p">:</span>
+  <span class="n">cell</span><span class="o">.</span><span class="n">set_passive_parameters</span><span class="p">(</span><span class="n">gp</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">E</span><span class="o">=-</span><span class="mi">60</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">Ra</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">diameter</span> <span class="ow">in</span> <span class="n">diameters</span><span class="p">:</span>
+    <span class="n">cell</span><span class="o">.</span><span class="n">change_diameter</span><span class="p">(</span><span class="n">diameter</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">lengths</span><span class="p">:</span>
+      <span class="n">cell</span><span class="o">.</span><span class="n">change_length</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+      <span class="n">sim</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
+      <span class="n">Rin</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_Rin</span><span class="p">()</span>
+      <span class="n">tau_eff</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_tau_eff</span><span class="p">()</span>
+      <span class="c"># write result to the database</span>
+      <span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">      INSERT INTO results(</span>
+<span class="s">        length, diameter, Ra, Rin, tau_eff)</span>
+<span class="s">        VALUES (?,?,?,?,?)</span>
+<span class="s">      &quot;&quot;&quot;</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">&quot;Ra: </span><span class="si">%s</span><span class="s">, diameter: </span><span class="si">%s</span><span class="s">, length: </span><span class="si">%s</span><span class="s"> ----&gt; R_in: </span><span class="si">%s</span><span class="s">, tau_eff: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span>
+        <span class="n">Ra</span><span class="p">,</span> <span class="n">diameter</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">Rin</span><span class="p">,</span> <span class="n">tau_eff</span><span class="p">))</span>
+      <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">query</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">diameter</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rin</span><span class="p">,</span> <span class="n">tau_eff</span><span class="p">)</span>
+        <span class="p">)</span>
+<span class="n">cxn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+<span class="c"># analyse the data</span>
+<span class="c"># ================</span>
+<span class="n">sl</span><span class="o">.</span><span class="n">create_aggregate_functions</span><span class="p">(</span><span class="n">cxn</span><span class="p">)</span>
+
+<span class="c"># If you want to play with SQL you can download a nice firefox add on called</span>
+<span class="c"># &#39;SQLite Manager&#39;. Connect to the database (which is the file</span>
+<span class="c"># &#39;simulation_results.sqlite&#39;) and play with SQL-statements (click on the left</span>
+<span class="c"># side on `Tables -&gt; Results` and then on the register `execute SQL`). Then you</span>
+<span class="c"># can enter SQL statements. Use the examples from below to start with (e.g.:</span>
+<span class="c"># &#39;SELECT length, tau_eff FROM results&#39;)</span>
+
+<span class="n">t_query</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, tau_eff FROM results&#39;</span><span class="p">)</span>
+<span class="n">t_query1</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, tau_eff FROM results WHERE Ra=1 AND diameter=1&#39;</span><span class="p">)</span>
+<span class="n">t_query2</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, tau_eff FROM results WHERE Ra=200 AND diameter=1&#39;</span><span class="p">)</span>
+<span class="n">t_query3</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, tau_eff FROM results WHERE Ra=200 AND diameter=3&#39;</span><span class="p">)</span>
+<span class="n">t_query_avg1</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;SELECT length, avg(tau_eff) FROM results WHERE Ra=1 GROUP BY length&#39;</span><span class="p">)</span>
+<span class="n">t_query_avg2</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;SELECT length, avg(tau_eff) FROM results WHERE Ra=200 GROUP BY length&#39;</span><span class="p">)</span>
+
+<span class="n">r_query</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, Rin FROM results&#39;</span><span class="p">)</span>
+<span class="n">r_query1</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, Rin FROM results WHERE Ra=1 AND diameter=1&#39;</span><span class="p">)</span>
+<span class="n">r_query2</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, Rin FROM results WHERE Ra=200 AND diameter=1&#39;</span><span class="p">)</span>
+<span class="n">r_query3</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SELECT length, Rin FROM results WHERE Ra=200 AND diameter=3&#39;</span><span class="p">)</span>
+<span class="n">r_query_avg1</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;SELECT length, avg(Rin) FROM results WHERE Ra=1 GROUP BY length&#39;</span><span class="p">)</span>
+<span class="n">r_query_avg2</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;SELECT length, avg(Rin) FROM results WHERE Ra=200 GROUP BY length&#39;</span><span class="p">)</span>
+
+<span class="n">query_avg_errorbar</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;SELECT length, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s"> FROM results WHERE </span><span class="si">%s</span><span class="s"> GROUP BY length&#39;</span><span class="p">)</span>
+
+<span class="c"># examples for plotting results for some queries:</span>
+<span class="n">sl</span><span class="o">.</span><span class="n">show_scatter_query</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">t_query</span><span class="p">)</span>
+<span class="n">sl</span><span class="o">.</span><span class="n">show_query_errorbar</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query_avg_errorbar</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;avg(tau_eff)&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="s">&#39;SQLstd(tau_eff)&#39;</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s">&#39;Ra=1&#39;</span><span class="p">)</span>
+<span class="n">sl</span><span class="o">.</span><span class="n">show_query_errorbar</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query_avg_errorbar</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;avg(tau_eff)&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="s">&#39;SQLstd(tau_eff)&#39;</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s">&#39;Ra=200&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And here the sql-library:</p>
+<p><tt class="docutils literal"><span class="pre">sqllib.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">SQLaggregate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  This class serves as the parent class of self written aggregate functions.</span>
+<span class="sd">  The subclasses have to define the `finalize` function.</span>
+
+<span class="sd">  **Important**: each aggregate function has to be listed in the function</span>
+<span class="sd">  `create_aggregate_functions`</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SQLstd</span><span class="p">(</span><span class="n">SQLaggregate</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">SQLsem</span><span class="p">(</span><span class="n">SQLaggregate</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">create_aggregate_functions</span><span class="p">(</span><span class="n">cxn</span><span class="p">):</span>
+  <span class="n">cxn</span><span class="o">.</span><span class="n">create_aggregate</span><span class="p">(</span><span class="s">&quot;SQLstd&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SQLstd</span><span class="p">)</span>
+  <span class="n">cxn</span><span class="o">.</span><span class="n">create_aggregate</span><span class="p">(</span><span class="s">&quot;SQLsem&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SQLsem</span><span class="p">)</span>
+
+<span class="c"># Here are two function to illustrate how to plot data from a database and how</span>
+<span class="c"># to use aggregate functions:</span>
+
+<span class="k">def</span> <span class="nf">show_scatter_query</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Hello World&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&#39;y&#39;</span><span class="p">,</span>
+                       <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+  <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+  <span class="n">sql_result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sql_result</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">show_query_errorbar</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;avg(Rin)&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="s">&#39;SQLsem(Rin)&#39;</span><span class="p">,</span>
+                        <span class="n">condition</span><span class="o">=</span><span class="s">&#39;Ra=1&#39;</span><span class="p">):</span>
+  <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span> <span class="o">%</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">condition</span><span class="p">))</span>
+  <span class="n">sql_result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">errorbar</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sql_result</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">errorbar</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="remarks">
+<h2>Remarks<a class="headerlink" href="#remarks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>For FAQ see <a class="reference internal" href="../FAQ/sql_faq.html#faq-sql"><em>SQL - FAQ</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Part 3: Writing a Simulation</a><ul>
+<li><a class="reference internal" href="#exercise">Exercise</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#remarks">Remarks</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pydesign.html"
+                        title="previous chapter">Part 2: Introduction to pyDesign</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../FAQ/index_faq.html"
+                        title="next chapter">Frequently Asked Questions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/quickstart/simulation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../FAQ/index_faq.html" title="Frequently Asked Questions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pydesign.html" title="Part 2: Introduction to pyDesign"
+             >previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" >Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

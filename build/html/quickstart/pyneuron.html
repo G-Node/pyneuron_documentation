@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Part 1: Introduction to pyNEURON &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Quickstart" href="index_quickstart.html" />
+    <link rel="next" title="Part 2: Introduction to pyDesign" href="pydesign.html" />
+    <link rel="prev" title="Quickstart" href="index_quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pydesign.html" title="Part 2: Introduction to pyDesign"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index_quickstart.html" title="Quickstart"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" accesskey="U">Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="part-1-introduction-to-pyneuron">
+<span id="intro-pyneuron"></span><h1>Part 1: Introduction to pyNEURON<a class="headerlink" href="#part-1-introduction-to-pyneuron" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Philipp Rautenberg &lt;<a class="reference external" href="mailto:philipp&#46;rautenberg&#37;&#52;&#48;skip_this&#46;g-node&#46;org">philipp<span>&#46;</span>rautenberg<span>&#64;</span>skip_this<span>&#46;</span>g-node<span>&#46;</span>org</a>&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Tags:</th><td class="field-body">mso basics pyneuron</td>
+</tr>
+</tbody>
+</table>
+<p>In order to run the code you have to install the following packages:</p>
+<ul class="simple">
+<li><strong>NEURON</strong> with python support: <a class="reference external" href="http://www.neuron.yale.edu/neuron/install/install.html">Download and Install NEURON</a></li>
+<li><strong>matplotlib</strong></li>
+</ul>
+<p>To get started use a python interpreter, such as python or ipython. I recommend
+to use <cite>ipython</cite> with <cite>&#8211;pylab</cite> in order to enable interactive use of
+plotting):</p>
+<div class="highlight-python"><pre>$ ipython --pylab</pre>
+</div>
+<div class="section" id="exercise">
+<h2>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<p><strong>Create a bipolar neuron and simulate a current clamp experiment</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Create a three compartmental model with one soma and two dendrites</li>
+<li>Simulate a somatic current clamp experiment</li>
+<li>Visualize results of the simulations with <tt class="docutils literal"><span class="pre">matplotlib</span></tt></li>
+</ul>
+</div></blockquote>
+<p>The model:</p>
+<ul class="simple">
+<li>A bipolar neuron with a soma and two morphological equivalent dendrites</li>
+<li>Soma length (<tt class="docutils literal"><span class="pre">soma.L</span></tt>): [40 um]</li>
+<li>Soma diameter (<tt class="docutils literal"><span class="pre">soma.diam</span></tt>): [20 um]</li>
+<li>Axial Resistivity (<tt class="docutils literal"><span class="pre">Ra</span></tt>): 200 [Ohm * cm]</li>
+<li>Passive conductivity (<tt class="docutils literal"><span class="pre">pas.g</span></tt>) = 0.003 [S/cm^2]</li>
+<li>Passive reversal potential (<tt class="docutils literal"><span class="pre">pas.e</span></tt>) = -60 [mV]</li>
+</ul>
+<p>Measures:</p>
+<p>Let&#8217;s insert a current pulse with current clamp and record the voltage trace at
+the location of stimulation. From this voltage trace we can calculate the</p>
+<ul class="simple">
+<li><cite>tau_eff</cite> (effective time constant): time after simulus onset when the
+voltage trace reaches 1 - 1/e of its maximal change (~63%).</li>
+<li><cite>R_in</cite> (input resistance): dV(max)/dI</li>
+</ul>
+<p>Here is a sketch of the setup:</p>
+<div class="highlight-python"><pre>                    L=40 um
+                    diam=20 um
+                    _________
+L=150 um, diam=3 um |       | L=150 um, diam=3 um
+====================| soma  |===================
+dend_ipsi           |_______| dend_contra
+
+
+                       /\
+                       ||
+                       || electrode
+                       ||
+                       ||
+
+
+   current pulse:
+___________                               __________
+ 1 s; 0 nA |                              | 1 s; 0 nA
+           |     3 s; -1 nA               |
+           |______________________________|</pre>
+</div>
+</div>
+<div class="section" id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">pyneuron.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">neuron</span>
+<span class="c"># most NEURON specific commands start with `neuron.h.`</span>
+
+<span class="c"># Creating the morphology</span>
+<span class="c"># =======================</span>
+
+<span class="c"># soma (compartment: neuron.h.Section() )</span>
+<span class="n">soma</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Section</span><span class="p">()</span>
+<span class="n">soma</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">soma</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="mi">40</span> <span class="c"># um; stored as a float number</span>
+<span class="n">soma</span><span class="o">.</span><span class="n">diam</span> <span class="o">=</span> <span class="mi">20</span> <span class="c"># um</span>
+<span class="n">soma</span><span class="o">.</span><span class="n">nseg</span> <span class="o">=</span> <span class="mi">10</span> <span class="c"># stored as an integer</span>
+
+<span class="c"># contralateral dendrite</span>
+<span class="n">dend_contra</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Section</span><span class="p">()</span>
+<span class="n">dend_contra</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">dend_contra</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">dend_contra</span><span class="o">.</span><span class="n">diam</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">dend_contra</span><span class="o">.</span><span class="n">nseg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dend_contra</span><span class="o">.</span><span class="n">L</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c"># ipsi lateral dendrite</span>
+<span class="n">dend_ipsi</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Section</span><span class="p">()</span>
+<span class="n">dend_ipsi</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">dend_ipsi</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">dend_ipsi</span><span class="o">.</span><span class="n">diam</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">dend_ipsi</span><span class="o">.</span><span class="n">nseg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dend_ipsi</span><span class="o">.</span><span class="n">L</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">dend_contra</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">soma</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c"># connect soma(1) with dend_contra(0)</span>
+<span class="n">dend_ipsi</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">soma</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c"># connect soma(0) with dend_ipsi(0)</span>
+
+<span class="c"># Implementing a current clamp electrode</span>
+<span class="c"># ======================================</span>
+
+<span class="c"># Locate the electrode at the center of the soma</span>
+<span class="n">stim</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">IClamp</span><span class="p">(</span><span class="n">soma</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+
+<span class="c"># Setting recording paradigm</span>
+<span class="n">stim</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">stim</span><span class="o">.</span><span class="n">amp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stim</span><span class="o">.</span><span class="n">dur</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="c"># You can play with the NEURON-gui by typing</span>
+<span class="c"># &gt;&gt;&gt; from neuron import gui</span>
+<span class="c"># For an overview (gui menu bar): Tools -&gt; Model View -&gt; 1 real cell -&gt; root...</span>
+
+<span class="c"># Record Time from NEURON (neuron.h._ref_t)</span>
+<span class="n">rec_t</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+<span class="n">rec_t</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">_ref_t</span><span class="p">)</span>
+<span class="c"># Record Voltage from the center of the soma</span>
+<span class="n">rec_v</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+<span class="n">rec_v</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">soma</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">_ref_v</span><span class="p">)</span>
+
+<span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">finitialize</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">neuron</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="n">neuron</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c"># Plot the recordings with matplotlib</span>
+<span class="c"># ===================================</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># get values from NEURON-vector format into Python format</span>
+<span class="n">times</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># Use list to add another trace later.</span>
+<span class="n">voltages</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rec_t</span><span class="p">))</span> <span class="c"># alternativ to `list(rec_t)`: `numpy.array(rec_t)`</span>
+<span class="n">voltages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rec_v</span><span class="p">))</span>
+<span class="c"># check types by:</span>
+<span class="c"># &gt;&gt;&gt; type(rec_t)</span>
+<span class="c"># &gt;&gt;&gt; type(time[0])</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">voltages</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;Time [ms]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;Voltage [mV]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">ymin</span><span class="o">=-</span><span class="mi">120</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> <span class="c"># If the interpreter stops now: close the figure.</span>
+<span class="c"># For interactive plotting, see `Part 1` -&gt; `ipython`</span>
+
+<span class="c"># Does the voltage trace look as you expected?</span>
+
+<span class="c"># Setting passive parameters</span>
+<span class="c"># ==========================</span>
+
+<span class="c"># An important part of NEURON-design is the following:</span>
+<span class="c"># In order to increase the resolution of `neuron.h.Section()`s (=compartments),</span>
+<span class="c"># each section is divided into `nseg` segments of equal length.</span>
+<span class="c"># Some parameters are provided for a entire section, others for a segment:</span>
+
+<span class="c"># Do for each section (here: soma, dend_contra, dend_ipsi):</span>
+<span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">allsec</span><span class="p">():</span>
+  <span class="c"># Do with the present `sec`</span>
+  <span class="n">sec</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;pas&#39;</span><span class="p">)</span>
+  <span class="n">sec</span><span class="o">.</span><span class="n">Ra</span> <span class="o">=</span> <span class="mi">200</span>
+  <span class="c"># Do for each segment within `sec`:</span>
+  <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">sec</span><span class="p">:</span>
+    <span class="c"># Do with the segment `seg`:</span>
+    <span class="n">seg</span><span class="o">.</span><span class="n">pas</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="mf">0.003</span>
+    <span class="n">seg</span><span class="o">.</span><span class="n">pas</span><span class="o">.</span><span class="n">e</span> <span class="o">=</span> <span class="o">-</span><span class="mi">60</span>
+
+<span class="n">neuron</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">finitialize</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">neuron</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="n">neuron</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rec_t</span><span class="p">))</span>
+<span class="n">voltages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rec_v</span><span class="p">))</span>
+<span class="n">fig2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">voltage</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">voltages</span><span class="p">):</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;Time [ms]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;Voltage [mV]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">ymin</span><span class="o">=-</span><span class="mi">120</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">traces</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;no channels&#39;</span><span class="p">,</span> <span class="s">&#39;passive channels&#39;</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s">&#39;best&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="remarks">
+<h2>Remarks<a class="headerlink" href="#remarks" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Interesting discussion for <a class="reference external" href="https://www.neuron.yale.edu/phpBB/viewtopic.php?f=2&amp;t=391&amp;start=0">possible section syntax</a></li>
+<li>For FAQ see <a class="reference internal" href="../FAQ/pyneuron_faq.html#faq-pyneuron"><em>pyNEURON FAQ</em></a></li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Part 1: Introduction to pyNEURON</a><ul>
+<li><a class="reference internal" href="#exercise">Exercise</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#remarks">Remarks</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index_quickstart.html"
+                        title="previous chapter">Quickstart</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pydesign.html"
+                        title="next chapter">Part 2: Introduction to pyDesign</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/quickstart/pyneuron.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pydesign.html" title="Part 2: Introduction to pyDesign"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index_quickstart.html" title="Quickstart"
+             >previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_quickstart.html" >Quickstart</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SQL - FAQ &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Frequently Asked Questions" href="index_faq.html" />
+    <link rel="next" title="Version Control System - FAQ" href="version_control_system_faq.html" />
+    <link rel="prev" title="matplotlib - FAQ" href="matplotlib_faq.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="version_control_system_faq.html" title="Version Control System - FAQ"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="matplotlib_faq.html" title="matplotlib - FAQ"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_faq.html" accesskey="U">Frequently Asked Questions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sql-faq">
+<span id="faq-sql"></span><h1><a class="toc-backref" href="#id1">SQL - FAQ</a><a class="headerlink" href="#sql-faq" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#sql-faq" id="id1">SQL - FAQ</a><ul>
+<li><a class="reference internal" href="#how-to-add-change-delete-a-column-in-a-table" id="id2">How to add/change/delete a column in a table?</a></li>
+<li><a class="reference internal" href="#how-to-analyze-by-group" id="id3">How to analyze by group?</a></li>
+<li><a class="reference internal" href="#how-to-create-a-table-with-a-composite-primary-key" id="id4">How to create a table with a composite primary key?</a></li>
+<li><a class="reference internal" href="#how-can-i-write-my-own-aggregate-functions" id="id5">How can i write my own aggregate functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-add-change-delete-a-column-in-a-table">
+<span id="sql-add-change-delete-column"></span><h2><a class="toc-backref" href="#id2">How to add/change/delete a column in a table?</a><a class="headerlink" href="#how-to-add-change-delete-a-column-in-a-table" title="Permalink to this headline">¶</a></h2>
+<p>Example for a sqlite-database:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>cursor.execute(</dt>
+<dd>&#8216;ALTER TABLE table_name&#8217; +
+&#8216;ADD column_name datatype&#8217;)</dd>
+<dt>cursor.execute(</dt>
+<dd>&#8216;ALTER TABLE table_name&#8217; +
+&#8216;DROP column_name&#8217;)</dd>
+<dt>cursor.execute(</dt>
+<dd>&#8216;ALTER TABLE table_name&#8217; +
+&#8216;ALTER column_name datatype&#8217;)</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="how-to-analyze-by-group">
+<span id="sql-analyse-group"></span><h2><a class="toc-backref" href="#id3">How to analyze by group?</a><a class="headerlink" href="#how-to-analyze-by-group" title="Permalink to this headline">¶</a></h2>
+<p>Example for a sqlite-database:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+  <span class="s">&#39;SELECT age, COUNT(age) &#39;</span> <span class="o">+</span>
+  <span class="s">&#39;FROM morphologies &#39;</span> <span class="o">+</span>
+  <span class="s">&#39;GROUP BY age&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-to-create-a-table-with-a-composite-primary-key">
+<span id="sql-composite-primary-key"></span><h2><a class="toc-backref" href="#id4">How to create a table with a composite primary key?</a><a class="headerlink" href="#how-to-create-a-table-with-a-composite-primary-key" title="Permalink to this headline">¶</a></h2>
+<p>Example for a sqlite-database:</p>
+<div class="highlight-python"><pre>CREATE TABLE track(
+ album CHAR(10),
+ disk INTEGER,
+ posn INTEGER,
+ song VARCHAR(255),
+ PRIMARY KEY (album, disk, posn)
+)</pre>
+</div>
+<p>Source: <a class="reference external" href="http://sqlzoo.net/howto/source/u.cgi/tip241027/sqlite">SQLzoo</a></p>
+<p>Note: this doesn&#8217;t work if a PK-field contains a NULL.</p>
+</div>
+<div class="section" id="how-can-i-write-my-own-aggregate-functions">
+<span id="sql-selfwritten-aggregate-functions"></span><h2><a class="toc-backref" href="#id5">How can i write my own aggregate functions</a><a class="headerlink" href="#how-can-i-write-my-own-aggregate-functions" title="Permalink to this headline">¶</a></h2>
+<p>Example for a sqlite-database:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sqlite3</span> <span class="kn">as</span> <span class="nn">sqlite</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="k">class</span> <span class="nc">self_written_SQLvar</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+<span class="n">cxn</span> <span class="o">=</span> <span class="n">sqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;:memory:&#39;</span><span class="p">)</span>
+<span class="n">cur</span> <span class="o">=</span> <span class="n">cxn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;CREATE TABLE &#39;mytable&#39; (&#39;numbers&#39; INTEGER)&quot;</span><span class="p">)</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;INSERT INTO &#39;mytable&#39; VALUES (1)&quot;</span><span class="p">)</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;INSERT INTO &#39;mytable&#39; VALUES (2)&quot;</span><span class="p">)</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;INSERT INTO &#39;mytable&#39; VALUES (3)&quot;</span><span class="p">)</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;INSERT INTO &#39;mytable&#39; VALUES (4)&quot;</span><span class="p">)</span>
+<span class="n">cxn</span><span class="o">.</span><span class="n">create_aggregate</span><span class="p">(</span><span class="s">&quot;self_written_SQLvar&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">self_written_SQLvar</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;SELECT avg(numbers), self_written_SQLvar(numbers) FROM mytable&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="c"># &gt;&gt;&gt; [(2.5, 1.25)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">SQL - FAQ</a><ul>
+<li><a class="reference internal" href="#how-to-add-change-delete-a-column-in-a-table">How to add/change/delete a column in a table?</a></li>
+<li><a class="reference internal" href="#how-to-analyze-by-group">How to analyze by group?</a></li>
+<li><a class="reference internal" href="#how-to-create-a-table-with-a-composite-primary-key">How to create a table with a composite primary key?</a></li>
+<li><a class="reference internal" href="#how-can-i-write-my-own-aggregate-functions">How can i write my own aggregate functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="matplotlib_faq.html"
+                        title="previous chapter">matplotlib - FAQ</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="version_control_system_faq.html"
+                        title="next chapter">Version Control System - FAQ</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/FAQ/sql_faq.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="version_control_system_faq.html" title="Version Control System - FAQ"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="matplotlib_faq.html" title="matplotlib - FAQ"
+             >previous</a> |</li>
+        <li><a href="../index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li>
+          <li><a href="index_faq.html" >Frequently Asked Questions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

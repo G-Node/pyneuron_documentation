@@ -1,0 +1,65 @@
+.. _intro_pydesign:
+
+Part 2: Introduction to pyDesign
+================================
+:Author: Philipp Rautenberg <philipp.rautenberg@skip_this.g-node.org>
+:Tags: basics pyneuron
+
+What do I mean with pyDesign? This is not a package like ``neuron`` but rather
+an idiom for the treatment of following situation: You start to write a code in a linear
+way: The interpreter goes from top to bottom, passes some loops and finishes
+at the end. But as the program gets larger it becomes reasonable to re-design
+your python code by using structures like functions (``def xyz():``), objects
+(``class xyz():``), and modules. Those structures make life easier as you will
+see.
+
+As we dont want to write the same code again and again, we can use functions in
+order to collect usefull sequences of commands. We give names to these
+collections and use them instead of the entire sequence. One example for this
+is the function ``make_compartment()``.
+
+Another important structure is the object. Within an object we can combine
+functions (=object `methods`) and state variables (=object `attributes`). The
+description of an object is written in a ``class`` statement. For an example
+see ``Cell()`` and ``Simulation()`` (below).
+
+We can code those structures and collect them in modules which is nothing else
+than an extra python-file. By this way of `out sourcing`, we keep our `real
+code` nice and clean. Therefore, we can focus on our (scientific) problem. Also
+we can use the out sourced code within other programs without copy and paste.
+
+Exercise
+--------
+
+**Simplify the code**
+
+  * Keep control of your code by organizing modules/libraries
+  * Use object oriented programming paradigm
+
+Code
+----
+
+This code is doing same like the code of part one. The difference is that it
+is just the organization of the code (to run this, save both files in the same
+directory and start there ``ipyton``).
+
+``pydesign.py``:
+
+.. literalinclude:: src/pydesign.py
+
+
+And here is the library (it is not really a coherent style from a programmers
+point of view but rather introduces different python-structures).
+
+``pydesignlib.py``:
+
+.. literalinclude:: src/pydesignlib.py
+
+Remarks
+-------
+
+Check the following commands and see within the code how it is implemented:
+
+  * ``help pdl.make_compartment`` (shows the docstring)
+  * ``pdl.make_compartment ?`` (similar)
+  * ``pld.make_compartment ??`` (ipython: shows the code)

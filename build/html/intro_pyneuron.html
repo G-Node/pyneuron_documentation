@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Part 1: Introduction to pyNEURON &mdash; Documentation of pyNEURON 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Documentation of pyNEURON 0.1 documentation" href="index.html" />
+    <link rel="next" title="Part 2: Introduction to pyDesign" href="intro_pydesign.html" />
+    <link rel="prev" title="Welcome to pyNEURON and Tools for Neuroscientists" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="intro_pydesign.html" title="Part 2: Introduction to pyDesign"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyNEURON and Tools for Neuroscientists"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="part-1-introduction-to-pyneuron">
+<h1><a class="toc-backref" href="#id1">Part 1: Introduction to pyNEURON</a><a class="headerlink" href="#part-1-introduction-to-pyneuron" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Philipp Rautenberg &lt;<a class="reference external" href="mailto:neuro&#37;&#52;&#48;skip_this&#46;paedia&#46;info">neuro<span>&#64;</span>skip_this<span>&#46;</span>paedia<span>&#46;</span>info</a>&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Tags:</th><td class="field-body">mso basics pyneuron</td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#part-1-introduction-to-pyneuron" id="id1">Part 1: Introduction to pyNEURON</a><ul>
+<li><a class="reference internal" href="#exercise" id="id2">Exercise</a></li>
+<li><a class="reference internal" href="#code" id="id3">Code</a></li>
+<li><a class="reference internal" href="#remarks" id="id4">Remarks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>In order to run the code you have to install the following packages:</p>
+<ul class="simple">
+<li><strong>NEURON</strong> with python support: <a class="reference external" href="http://www.neuron.yale.edu/neuron/install/install.html">Download and Install NEURON</a></li>
+<li><strong>matplotlib</strong></li>
+</ul>
+<p>To get started use a python interpreter, such as python or ipython. I recommend
+to use <cite>ipython</cite> with <cite>&#8211;pylab</cite> in order to enable interactive use of
+plotting):</p>
+<div class="highlight-python"><pre>$ ipython --pylab</pre>
+</div>
+<div class="section" id="exercise">
+<h2><a class="toc-backref" href="#id2">Exercise</a><a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<p><strong>Create a bipolar neuron and simulate a current clamp experiment</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Create a three compartmental model with one soma and two dendrites</li>
+<li>Simulate a somatic current clamp experiment</li>
+<li>Visualize results of the simulations with <tt class="docutils literal"><span class="pre">matplotlib</span></tt></li>
+</ul>
+</div></blockquote>
+<p>The model:</p>
+<ul class="simple">
+<li>A bipolar neuron with a soma and two morphological equivalent dendrites</li>
+<li>Soma length (<tt class="docutils literal"><span class="pre">soma.L</span></tt>): [40 um]</li>
+<li>Soma diameter (<tt class="docutils literal"><span class="pre">soma.diam</span></tt>): [20 um]</li>
+<li>Axial Resistivity (<tt class="docutils literal"><span class="pre">Ra</span></tt>): 200 [Ohm * cm]</li>
+<li>Passive conductivity (<tt class="docutils literal"><span class="pre">pas.g</span></tt>) = 0.003 [S/cm^2]</li>
+<li>Passive reversal potential (<tt class="docutils literal"><span class="pre">pas.e</span></tt>) = -60 [mV]</li>
+</ul>
+<p>Measures:</p>
+<p>Let&#8217;s insert a current pulse with current clamp and record the voltage trace at
+the location of stimulation. From this voltage trace we can calculate the</p>
+<ul class="simple">
+<li><cite>tau_eff</cite> (effective time constant): time after simulus onset when the
+voltage trace reaches 1 - 1/e of its maximal change (~63%).</li>
+<li><cite>R_in</cite> (input resistance): dV(max)/dI</li>
+</ul>
+<p>Here is a sketch of the setup:</p>
+<div class="highlight-python"><pre>                    L=40 um
+                    diam=20 um
+                    _________
+L=150 um, diam=3 um |       | L=150 um, diam=3 um
+====================| soma  |===================
+dend_ipsi           |_______| dend_contra
+
+
+                       /\
+                       ||
+                       || electrode
+                       ||
+                       ||
+
+
+   current pulse:
+___________                               __________
+ 1 s; 0 nA |                              | 1 s; 0 nA
+           |     3 s; -1 nA               |
+           |______________________________|</pre>
+</div>
+</div>
+<div class="section" id="code">
+<h2><a class="toc-backref" href="#id3">Code</a><a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">pyneuron.py</span></tt>:</p>
+</div>
+<div class="section" id="remarks">
+<h2><a class="toc-backref" href="#id4">Remarks</a><a class="headerlink" href="#remarks" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Interesting discussion for <a class="reference external" href="https://www.neuron.yale.edu/phpBB/viewtopic.php?f=2&amp;t=391&amp;start=0">possible section syntax</a></li>
+<li>For FAQ see <a class="reference internal" href="FAQ/pyneuron_faq.html#faq-pyneuron"><em>pyNEURON FAQ</em></a></li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Part 1: Introduction to pyNEURON</a><ul>
+<li><a class="reference internal" href="#exercise">Exercise</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#remarks">Remarks</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to pyNEURON and Tools for Neuroscientists</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intro_pydesign.html"
+                        title="next chapter">Part 2: Introduction to pyDesign</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro_pyneuron.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="intro_pydesign.html" title="Part 2: Introduction to pyDesign"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyNEURON and Tools for Neuroscientists"
+             >previous</a> |</li>
+        <li><a href="index.html">Documentation of pyNEURON 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Rautenberg.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
