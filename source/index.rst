@@ -36,7 +36,7 @@ Links
 -----
 * `NEURON homepage <http://www.neuron.yale.edu/neuron>`_
 * `Download and Install NEURON <http://www.neuron.yale.edu/neuron/install/install.html>`_
-* `Introduction to pyNEURON by Andrew Davison <http://www.davison.webfactional.com/notes/modelling-single-cells-neuron-python/>`_
+* `Introduction to pyNEURON by Andrew Davison <http://andrewdavison.info/notes/modelling-single-cells-neuron-python/>`_
 
 
 Indices and tables
